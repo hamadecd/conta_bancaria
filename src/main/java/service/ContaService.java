@@ -15,15 +15,19 @@ public class ContaService {
     }
 
     public void depositar(Conta conta, Double valor) {
-        conta.setSaldo(conta.getSaldo() + valor);
+        if (valor > 0) {
+            conta.setSaldo(conta.getSaldo() + valor);
+            return;
+        }
+        System.err.println("Não foi possível depositar, valor deve ser maior do que zero");
     }
 
     public void sacar(Conta conta, Double valor) {
         if (conta.getSaldo() >= valor) {
             conta.setSaldo(conta.getSaldo() - valor);
-        } else {
-            System.out.println("Saldo insuficiente!");
+            return;
         }
+        System.err.println("Saldo insuficiente!");
     }
 
     public void transferir(Conta contaTransferindo, Conta contaRecebendo, Double valor) {
