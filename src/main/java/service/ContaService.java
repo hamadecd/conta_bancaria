@@ -4,8 +4,8 @@ import model.Conta;
 
 public class ContaService {
 
-    private static Integer numeroConta = 1;
-    private static Integer numeroAgencia = 1;
+    public static Integer numeroConta = 1;
+    public static Integer numeroAgencia = 1;
 
     public Conta cadastrar(String nome) {
         Conta conta = new Conta(numeroConta, numeroAgencia, nome);
@@ -34,6 +34,8 @@ public class ContaService {
         if (contaTransferindo.getSaldo() >= valor) {
             contaTransferindo.setSaldo(contaTransferindo.getSaldo() - valor);
             contaRecebendo.setSaldo(contaRecebendo.getSaldo() + valor);
+            return;
         }
+        System.err.println("Saldo insuficiente!");
     }
 }

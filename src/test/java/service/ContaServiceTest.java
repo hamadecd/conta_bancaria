@@ -1,10 +1,7 @@
 package service;
 
 import model.Conta;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
@@ -33,16 +30,21 @@ public class ContaServiceTest {
         contaService = new ContaService();
     }
 
+    @After
+    public void tearDown() {
+        // Inicia novamente os atributos após cada teste
+        contaService.numeroAgencia = 1;
+        contaService.numeroConta = 1;
+    }
+
     @Test
     public void deveSerPossivelCriarUmaConta() {
         Conta conta = contaService.cadastrar("Robert C. Martin");
 
+        Assert.assertTrue(conta != null);
         Assert.assertEquals((Integer) 1, conta.getAgencia());
         Assert.assertEquals((Integer) 1, conta.getNumero());
         Assert.assertEquals("Robert C. Martin", conta.getNomeDoCliente());
-
-        Assert.assertTrue(conta != null);
-        Assert.assertNotNull(conta);
     }
 
     @Test
@@ -50,7 +52,7 @@ public class ContaServiceTest {
         Conta conta = contaService.cadastrar("James Gosling");
 
         Assert.assertEquals(0.01, conta.getSaldo(), 0.1);
-        Assert.assertFalse(conta.getSaldo() != 0);
+        Assert.assertTrue(conta.getSaldo() == 0);
     }
 
     @Test
@@ -58,8 +60,9 @@ public class ContaServiceTest {
         Conta conta = contaService.cadastrar("Linus Torvalds");
         contaService.depositar(conta,  100.05);
         contaService.depositar(conta, 0.1);
-
-        Assert.assertEquals(100.15, conta.getSaldo(), 0.1);
+        // Math.abs(expected - actual) <= delta
+        // Treinando o uso do delta no limite
+        Assert.assertEquals(100.15, conta.getSaldo(), 0.000000000000014210854715202003);
     }
 
     @Test
@@ -69,7 +72,7 @@ public class ContaServiceTest {
         contaService.sacar(conta, 50.0);
 
         Assert.assertEquals(50.0, conta.getSaldo(), 0);
-        Assert.assertNotEquals(100.0, conta.getSaldo());
+        Assert.assertNotEquals(100.0, conta.getSaldo(), 0);
     }
 
     @Test
@@ -83,28 +86,17 @@ public class ContaServiceTest {
         Assert.assertEquals(10.0, conta1.getSaldo(), 0);
     }
 
-    // Não gera uma conta com numero a agencia igual outra, então comparamos assim
     @Test
     public void contasComMesmoNumeroEAgenciaDevemSerIguais() {
-        Conta conta = contaService.cadastrar("Bill Gates");
-        Conta conta1 = contaService.cadastrar("Steve Jobs");
+        Conta conta1 = new Conta(1, 1, "Bill Gates");
+        Conta conta2 = new Conta(1, 1, "Steve Jobs");
 
-        Assert.assertNotEquals(conta.getNumero(), conta1.getNumero());
-        Assert.assertNotEquals(conta.getAgencia(), conta1.getAgencia());
-    }
-
-    // Falha - tem que rever parte da aula sobre o Equals
-    @Test
-    public void comparaDuasContasComOAssertEquals() {
-        Conta conta = contaService.cadastrar("Bill Gates");
-        Conta conta1 = contaService.cadastrar("Steve Jobs");
-
-        Assert.assertEquals(conta, conta1);
+        Assert.assertEquals(conta1, conta2);
     }
 
     @Test
     public void testaAssertSame() {
-        Conta conta = contaService.cadastrar("Igor Mascarenhas");
+        Conta conta = contaService.cadastrar("Samir Hamade");
         Conta conta1 = conta;
 
         Assert.assertSame(conta, conta1);
